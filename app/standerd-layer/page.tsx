@@ -1,9 +1,34 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import LogoEdition from "./components/logoEdition";
 import { JsonLayerType } from "@/types/standeredLayoutType";
+import { useForm } from "react-hook-form";
+import NavSidebar from "./components/NavSidebar";
+import axios from "axios";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export default function StandardLayout() {
+  const { data } = useQuery({
+    queryKey: ["jsonLayer"],
+    queryFn: async () => {
+      const res = await axios.get(
+        "http://192.168.0.190:8000/3dd1c4a1-272f-46b0-a5fb-384bb8281993"
+      );
+      return res.data.data ? JSON.parse(res.data.data) : jsonLayerDefault;
+    },
+  });
+  const { mutate } = useMutation({
+    mutationFn: async (dataJson: JsonLayerType) => {
+      const res = await axios.patch(
+        "http://192.168.0.190:8000/3dd1c4a1-272f-46b0-a5fb-384bb8281993",
+        {
+          data: JSON.stringify(dataJson),
+        }
+      );
+      return res.data;
+    },
+  });
+
   const jsonLayerDefault: JsonLayerType = {
     name_store: "fdsafja",
     sidebarSettings: {
@@ -29,9 +54,23 @@ export default function StandardLayout() {
       ],
     },
   };
+  const { register, watch } = useForm({
+    defaultValues: jsonLayerDefault,
+  });
   const [jsonLayer, setJsonLayer] = useState<JsonLayerType | null>(
     jsonLayerDefault
   );
+
+  useEffect(() => {
+    if (jsonLayer) {
+      const timeoutId = setTimeout(() => {
+        mutate(jsonLayer);
+      }, 500); // Debounce for 500ms
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [jsonLayer, mutate]);
+  console.log(data?.name_store);
   const [isEditStoreName, setIsEditStoreName] = useState(false);
   return (
     <div className="min-h-screen flex">
@@ -45,63 +84,24 @@ export default function StandardLayout() {
               isEditStoreName={isEditStoreName}
               setIsEditStoreName={setIsEditStoreName}
               setJsonLayer={setJsonLayer}
-              jsonLayer={jsonLayer}
+              jsonLayer={data}
+              name_store={data?.name_store}
             />
           </div>
         </div>
 
         {/* Navigation Menu */}
         <nav className="p-4 space-y-2">
-          <div className="flex items-center gap-3 p-2 rounded-md bg-blue-50 text-blue-600">
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-              />
-            </svg>
-            <span>Dashboard</span>
-          </div>
-
-          <div className="flex items-center gap-3 p-2 rounded-md text-gray-600 hover:bg-gray-50">
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-              />
-            </svg>
-            <span>Products</span>
-          </div>
-
-          <div className="flex items-center gap-3 p-2 rounded-md text-gray-600 hover:bg-gray-50">
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-              />
-            </svg>
-            <span>Orders</span>
-          </div>
+          {data?.sidebarSettings?.navigation?.map((item) => (
+            <NavSidebar
+              key={item.name}
+              item={item}
+              register={register}
+              jsonLayer={jsonLayer}
+              setJsonLayer={setJsonLayer}
+              watch={watch}
+            />
+          ))}
         </nav>
       </div>
 
