@@ -1,7 +1,6 @@
+import { JsonLayerType } from "@/types/standeredLayoutType";
 import React, { useEffect, useRef } from "react";
-type JsonLayerType = {
-  name_store: string;
-};
+
 export default function LogoEdition({
   isEditStoreName,
   setIsEditStoreName,
@@ -27,7 +26,14 @@ export default function LogoEdition({
       value={jsonLayer?.name_store}
       onBlur={() => setIsEditStoreName(false)}
       onChange={(e) =>
-        setJsonLayer({ ...jsonLayer, name_store: e.target.value })
+        setJsonLayer(
+          jsonLayer
+            ? {
+                ...jsonLayer,
+                name_store: e.target.value,
+              }
+            : null
+        )
       }
     />
   ) : (

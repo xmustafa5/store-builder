@@ -1,12 +1,33 @@
 "use client";
 import React, { useState } from "react";
 import LogoEdition from "./components/logoEdition";
-type JsonLayerType = {
-  name_store: string;
-};
+import { JsonLayerType } from "@/types/standeredLayoutType";
+
 export default function StandardLayout() {
   const jsonLayerDefault: JsonLayerType = {
     name_store: "fdsafja",
+    sidebarSettings: {
+      style: {
+        color: "#red",
+      },
+      navigation: [
+        {
+          name: "Dashboard",
+          icon: "ri-dashboard-line",
+          href: "/dashboard",
+        },
+        {
+          name: "Products",
+          icon: "ri-product-hunt-line",
+          href: "/products",
+        },
+        {
+          name: "Orders",
+          icon: "ri-shopping-cart-line",
+          href: "/orders",
+        },
+      ],
+    },
   };
   const [jsonLayer, setJsonLayer] = useState<JsonLayerType | null>(
     jsonLayerDefault
@@ -20,14 +41,6 @@ export default function StandardLayout() {
         <div className="p-4 border-b border-gray-200">
           <div className="h-8 flex items-center gap-2">
             <div className="w-8 h-8 shrink-0 bg-blue-600 rounded-md"></div>
-            {/* <input
-              type="text"
-              className="w-full border-none outline-none"
-              value={jsonLayer?.name_store}
-              onChange={(e) =>
-                setJsonLayer({ ...jsonLayer, name_store: e.target.value })
-              }
-            /> */}
             <LogoEdition
               isEditStoreName={isEditStoreName}
               setIsEditStoreName={setIsEditStoreName}
