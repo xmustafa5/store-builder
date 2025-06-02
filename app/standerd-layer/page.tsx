@@ -1,16 +1,17 @@
 "use client";
 import React, { useState } from "react";
+import LogoEdition from "./components/logoEdition";
 type JsonLayerType = {
   name_store: string;
 };
 export default function StandardLayout() {
   const jsonLayerDefault: JsonLayerType = {
-    name_store: "Store Name",
+    name_store: "fdsafja",
   };
   const [jsonLayer, setJsonLayer] = useState<JsonLayerType | null>(
     jsonLayerDefault
   );
-  console.log(jsonLayer);
+  const [isEditStoreName, setIsEditStoreName] = useState(false);
   return (
     <div className="min-h-screen flex">
       {/* Sidebar */}
@@ -18,7 +19,7 @@ export default function StandardLayout() {
         {/* Logo area */}
         <div className="p-4 border-b border-gray-200">
           <div className="h-8 flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-md"></div>
+            <div className="w-8 h-8 shrink-0 bg-blue-600 rounded-md"></div>
             {/* <input
               type="text"
               className="w-full border-none outline-none"
@@ -27,10 +28,12 @@ export default function StandardLayout() {
                 setJsonLayer({ ...jsonLayer, name_store: e.target.value })
               }
             /> */}
-            <span className="font-semibold text-gray-800 group">
-              <i className="ri-pencil-line group-hover:opacity-100 opacity-"></i>
-              {jsonLayer?.name_store}
-            </span>
+            <LogoEdition
+              isEditStoreName={isEditStoreName}
+              setIsEditStoreName={setIsEditStoreName}
+              setJsonLayer={setJsonLayer}
+              jsonLayer={jsonLayer}
+            />
           </div>
         </div>
 
