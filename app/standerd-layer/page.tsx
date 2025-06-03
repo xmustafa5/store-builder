@@ -70,7 +70,6 @@ export default function StandardLayout() {
       return () => clearTimeout(timeoutId);
     }
   }, [jsonLayer, mutate]);
-  console.log(data?.name_store);
   const [isEditStoreName, setIsEditStoreName] = useState(false);
   return (
     <div className="min-h-screen flex">
@@ -92,12 +91,12 @@ export default function StandardLayout() {
 
         {/* Navigation Menu */}
         <nav className="p-4 space-y-2">
-          {data?.sidebarSettings?.navigation?.map((item) => (
+          {data?.sidebarSettings?.navigation?.map((item: any) => (
             <NavSidebar
               key={item.name}
               item={item}
               register={register}
-              jsonLayer={jsonLayer}
+              jsonLayer={data}
               setJsonLayer={setJsonLayer}
               watch={watch}
             />

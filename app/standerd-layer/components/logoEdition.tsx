@@ -26,7 +26,7 @@ export default function LogoEdition({
   });
   useEffect(() => {
     setValue("name_store", name_store);
-  }, [name_store]);
+  }, [name_store, setValue]);
   const ref = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
