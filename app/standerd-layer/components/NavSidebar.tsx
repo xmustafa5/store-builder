@@ -1,23 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { JsonLayerType } from "@/types/standeredLayoutType";
+import IconsModal from "./Icons";
 
 interface NavSidebarProps {
   item: {
     name: string;
     icon: string;
   };
-  register: any;
   jsonLayer: JsonLayerType;
   setJsonLayer: React.Dispatch<React.SetStateAction<JsonLayerType | null>>;
-  watch: any;
 }
 
 export default function NavSidebar({
   item,
-  register,
   jsonLayer,
   setJsonLayer,
-  watch,
 }: NavSidebarProps) {
   const [isEditStoreName, setIsEditStoreName] = useState(false);
   const [itemName, setItemName] = useState(item.name);
@@ -43,7 +40,19 @@ export default function NavSidebar({
     }
     setIsEditStoreName(false);
   };
-
+  const [isEditIcon, setIsEditIcon] = useState(false);
+  const [itemIcon, setItemIcon] = useState(item.icon);
+  useEffect(() => {
+    setJsonLayer({
+      ...jsonLayer,
+      sidebarSettings: {
+        ...jsonLayer.sidebarSettings,
+        navigation: jsonLayer.sidebarSettings.navigation.map((nav: any) =>
+          nav.name === item.name ? { ...nav, icon: itemIcon } : nav
+        ),
+      },
+    });
+  }, [itemIcon]);
   return isEditStoreName ? (
     <div className="relative group flex items-center gap-3 p-2 rounded-md hover:bg-blue-100 bg-blue-50 text-blue-600">
       <i
@@ -70,8 +79,21 @@ export default function NavSidebar({
         onClick={() => setIsEditStoreName(true)}
         className="ri-pencil-line cursor-pointer group-hover:opacity-100 transition-all duration-300 opacity-0 absolute text-xl -top-3 -right-2"
       ></i>
-      <i className={item.icon}></i>
-      <span>{itemName}</span>
+      <i className={`ri-${itemIcon}`}></i>
+      <span className="relative">
+        {itemName}
+        <i
+          onClick={() => setIsEditIcon(true)}
+          className="ri-pencil-line cursor-pointer group-hover:opacity-100 transition-all duration-300 opacity-0 absolute text-xl -top-3 -left-6"
+        ></i>
+      </span>
+      {isEditIcon && (
+        <IconsModal
+          icons={jsonLayer.icons}
+          setIsEditIcon={setIsEditIcon}
+          setItemIcon={setItemIcon}
+        />
+      )}
     </div>
   );
 }

@@ -10,4 +10,5 @@ export type JsonLayerType = {
       href: string;
     }[];
   };
+  icons: string[];
 };
