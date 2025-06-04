@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import LogoEdition from "./components/logoEdition";
 import { JsonLayerType } from "@/types/standeredLayoutType";
-import { useForm } from "react-hook-form";
 import NavSidebar from "./components/NavSidebar";
 import axios from "axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -3154,9 +3153,7 @@ export default function StandardLayout() {
       ],
     },
   };
-  const { register, watch } = useForm({
-    defaultValues: jsonLayerDefault,
-  });
+
   const [jsonLayer, setJsonLayer] = useState<JsonLayerType | null>(
     jsonLayerDefault
   );
